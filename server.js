@@ -8,20 +8,24 @@ connectDB();
 
 const app = express();
 
-// ✅ Allow Vercel origin
+// ✅ Enable CORS with preflight support
 app.use(cors({
   origin: 'https://fams-nceccijsl-karim-rahals-projects-519f35ea.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+// ✅ Must handle preflight OPTIONS request
+app.options('*', cors({
+  origin: 'https://fams-nceccijsl-karim-rahals-projects-519f35ea.vercel.app',
   credentials: true,
 }));
 
 app.use(express.json());
 
-// ✅ DO NOT put full URL here — only the path
+// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 
-// Test route
+// Root test route
 app.get('/', (req, res) => {
   res.send('API is running ✅');
 });
