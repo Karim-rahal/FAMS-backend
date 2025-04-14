@@ -9,32 +9,22 @@ connectDB();
 const app = express();
 
 
-const allowedOrigin = 'https://fams-nceccijsl-karim-rahals-projects-519f35ea.vercel.app';
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || origin === allowedOrigin) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS not allowed from this origin'));
-    }
-  },
+  origin: 'https://fams-nceccijsl-karim-rahals-projects-519f35ea.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
-// Required to properly respond to preflight OPTIONS request
-app.options('*', cors());
 
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 
+// Root endpoint
 app.get('/', (req, res) => {
   res.send('API is running ✅');
 });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
