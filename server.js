@@ -10,7 +10,7 @@ const app = express();
 
 // ✅ Allow Vercel origin
 app.use(cors({
-  origin: 'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app',,
+  origin: 'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
