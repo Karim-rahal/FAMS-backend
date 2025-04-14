@@ -8,19 +8,19 @@ connectDB();
 
 const app = express();
 
-// ✅ Define allowed frontend origins
+// ✅ Allow both production and preview Vercel URLs
 const allowedOrigins = [
   'https://fams-psi.vercel.app',
   'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app'
 ];
 
-// ✅ Proper CORS function
+// ✅ Safe CORS setup
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('CORS blocked for origin: ' + origin));
+      callback(new Error('Not allowed by CORS: ' + origin));
     }
   },
   credentials: true,
@@ -28,18 +28,20 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ✅ Correct preflight handler
-app.options('*', cors()); // DO NOT pass a full URL here
+// ✅ Preflight support — use '*' not a full URL
+app.options('*', cors());
 
 app.use(express.json());
 
-// ✅ API routes (use path, not full URL)
+// ✅ Use path only, not full URL
 app.use('/api/auth', require('./routes/authRoutes'));
 
-// ✅ Root
+// ✅ Root test route
 app.get('/', (req, res) => {
   res.send('API is running ✅');
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
