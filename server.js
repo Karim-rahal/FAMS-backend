@@ -8,19 +8,30 @@ connectDB();
 
 const app = express();
 
-// ✅ CORS FIX — allow Vercel origin
+
+const allowedOrigin = 'https://fams-nceccijsl-karim-rahals-projects-519f35ea.vercel.app';
+
 app.use(cors({
-  origin: 'https://fams-nceccijsl-karim-rahals-projects-519f35ea.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin: function (origin, callback) {
+    if (!origin || origin === allowedOrigin) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed from this origin'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// Required to properly respond to preflight OPTIONS request
+app.options('*', cors());
 
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 
-// Root test
 app.get('/', (req, res) => {
   res.send('API is running ✅');
 });
