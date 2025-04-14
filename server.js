@@ -3,16 +3,15 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
-// Load env vars
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// ✅ Only allow Vercel frontend origins
+// ✅ Correctly formatted CORS setup
 const allowedOrigins = [
-  'https://fams-psi.vercel.app',
-  'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app'
+  'https://fams-psi.vercel.app', // Your production frontend
+  'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app' // Vercel preview
 ];
 
 app.use(cors({
@@ -20,7 +19,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS: ' + origin));
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
@@ -28,13 +27,12 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.options('*', cors()); // ✅ wildcard route only — NO full URLs
-
 app.use(express.json());
 
-// ✅ Use relative route paths — not URLs
+// API routes
 app.use('/api/auth', require('./routes/authRoutes'));
 
+// Test route
 app.get('/', (req, res) => {
   res.send('API is running ✅');
 });
