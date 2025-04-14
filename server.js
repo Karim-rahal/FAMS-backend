@@ -3,18 +3,19 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
+// Load environment variables
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// ✅ Allow both production and preview Vercel URLs
+// ✅ Define allowed frontend domains (production + preview)
 const allowedOrigins = [
-  'https://fams-psi.vercel.app',
-  'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app'
+  'https://fams-psi.vercel.app', // Production
+  'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app' // Preview
 ];
 
-// ✅ Safe CORS setup
+// ✅ Apply CORS securely
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -28,20 +29,18 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ✅ Preflight support — use '*' not a full URL
+// ✅ Handle preflight requests
 app.options('*', cors());
 
 app.use(express.json());
 
-// ✅ Use path only, not full URL
+// ✅ Register backend routes (no full URL here!)
 app.use('/api/auth', require('./routes/authRoutes'));
 
-// ✅ Root test route
+// ✅ Test root route
 app.get('/', (req, res) => {
   res.send('API is running ✅');
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
