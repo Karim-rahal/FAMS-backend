@@ -8,34 +8,35 @@ connectDB();
 
 const app = express();
 
-// ✅ Allow multiple Vercel origins (production + preview)
+// ✅ Define allowed frontend origins
 const allowedOrigins = [
-  'https://fams-psi.vercel.app', // production domain
-  'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app' // preview domain
+  'https://fams-psi.vercel.app',
+  'https://fams-8dzo66ee4-karim-rahals-projects-519f35ea.vercel.app'
 ];
 
+// ✅ Proper CORS function
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('CORS not allowed from this origin: ' + origin));
+      callback(new Error('CORS blocked for origin: ' + origin));
     }
   },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ✅ Enable preflight for all routes
-app.options('*', cors());
+// ✅ Correct preflight handler
+app.options('*', cors()); // DO NOT pass a full URL here
 
 app.use(express.json());
 
-// ✅ API routes
+// ✅ API routes (use path, not full URL)
 app.use('/api/auth', require('./routes/authRoutes'));
 
-// ✅ Health check / root
+// ✅ Root
 app.get('/', (req, res) => {
   res.send('API is running ✅');
 });
